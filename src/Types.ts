@@ -12,17 +12,23 @@ export interface Station {
 export interface State {
   media?: string ;
   status: string;
-  selected?: string | undefined;
+  selected?: Station;
+}
+
+export enum PlayEvent {
+  playing = "playing",
+  paused = "paused"
 }
 
 export const initialState = {
-  status: 'paused',
+  status: PlayEvent.paused
 };
 
 export enum StationsEvents {
   play = 'Play',
   select = 'Select'
 }
+
 
 export interface StationsActions {
   type: StationsEvents;

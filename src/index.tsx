@@ -1,10 +1,12 @@
-import React, { useEffect, useState, useReducer, useRef } from 'react';
+import React, { useEffect, useState, useReducer } from 'react';
 import { render } from 'react-dom';
 import Stations from './Stations';
 import {Station, initialState, State, StationsEvents, StationsActions} from './Types';
 import {getStations} from './API';
 import Styled from 'styled-components';
 import './index.css'
+import Ribbon from './Ribbon';
+import reducer from './Reducer';
 
 const Header = Styled.div`
   position: fixed;
@@ -19,43 +21,20 @@ const UnderHeader = Styled.div`
   background: white;
 `;
 
-const audio = new Audio();
+// const audio = new Audio();
 
 export const App = () => {
   
-  const reducer = (state:State, action: StationsActions): State => {
-  switch (action.type) {
-    case StationsEvents.play:{
-      const {selected, media } = action.payload; 
-      let newStatus = 'playing';
-      if(state.selected === selected){
-        if(state.status === 'playing'){
-         newStatus = 'paused';
-          audio.pause();
-        }else{
-         newStatus = 'playing'
-         audio.play();
-        }  
-      }else{
-        audio.src = media;
-        audio.play()
-      }
-      return { ...state, selected, media, status: newStatus};
-    }
-    case StationsEvents.select:{
-      const { selected } = action.payload; 
-      return { ...state, selected }
-    }
-  }
- }
+  
 
   const [stations, setStations] = useState<Station[]>([]);
 
   const [state, Dispatch] = useReducer(reducer,undefined,() => initialState);
 
-  const onStationSelect = (selected:string, media:string) => {
+  const onStationSelect = (selected:Station, media:string) => {
     Dispatch({type: StationsEvents.play, payload: {selected, media} })
   }
+
 
   useEffect(() => {
     getStations().then(data => {setStations(data)})
@@ -64,8 +43,9 @@ export const App = () => {
   return (
       <div>
         <Header><h1>Radio Stations</h1></Header>
-        <UnderHeader></UnderHeader>
+        <UnderHeader/>
         <Stations stations={stations} onClick={onStationSelect} state={state} />
+        <Ribbon state={state} onClick={onStationSelect} />
       </div>
     );
 }
