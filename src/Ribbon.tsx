@@ -14,27 +14,37 @@ const Container = Styled.div`
     background: white;
     border-top: 1px solid lightgray;
     display: flex;
-    
-    & div {
-        display: inline-flex;
-        align-items: center;
-        align-content: space-around;
-        flex-direction: column-reverse;
-        align-self: stretch;
-        width: 100%;
-    }
 
 `;
+
+const StationName = Styled.div`
+    width: 40vh;
+    align-self: center;
+    margin: 1rem;
+    font-size: large;
+`;
+
+const Controls = Styled.div`
+    display: inline-flex;
+    align-items: center;
+    align-content: space-around;
+    flex-direction: column-reverse;
+    align-self: stretch;
+    width: 100%;
+    padding-right: 30vh;
+`;
+
+
 
 const Ribbon = ({state, onClick}: { state: State, onClick: (selected:Station, media:string) => void}) => {
 
 
     return state.selected !== undefined ? <Container onClick={() => onClick(state.selected, state.media)}>
         <img src={state.selected.imgUrl} alt="Station Logo" aria-hidden />
-        <div>
+        <StationName>{state.selected.name} </StationName>
+        <Controls>
         { state.status === PlayEvent.paused ? <Play /> : <Pause />}
-        {state.selected.name}
-        </div>
+        </Controls>
        
     </Container> : <></>
 

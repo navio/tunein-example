@@ -26,7 +26,8 @@ export const initialState = {
 
 export enum StationsEvents {
   play = 'Play',
-  select = 'Select'
+  select = 'Select',
+  stop = "Stop",
 }
 
 

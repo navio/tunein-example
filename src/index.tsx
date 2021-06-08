@@ -6,14 +6,15 @@ import {getStations} from './API';
 import Styled from 'styled-components';
 import './index.css'
 import Ribbon from './Ribbon';
-import reducer from './Reducer';
+import reducer, { ERRORLOADING } from './Reducer';
 
 const Header = Styled.div`
   position: fixed;
-  background: white;
+  background: #1c203c;
   width: 100%;
   text-align: center;
   border-bottom: 1px solid gray;
+  color:white;
 `;
 
 const UnderHeader = Styled.div`
@@ -35,6 +36,9 @@ export const App = () => {
     Dispatch({type: StationsEvents.play, payload: {selected, media} })
   }
 
+  document.addEventListener(ERRORLOADING,() => {
+    Dispatch({type: StationsEvents.stop, payload: {} });
+  })
 
   useEffect(() => {
     getStations().then(data => {setStations(data)})
@@ -42,7 +46,7 @@ export const App = () => {
 
   return (
       <div>
-        <Header><h1>Radio Stations</h1></Header>
+        <Header><h1>TuneIn: Internet Radio</h1></Header>
         <UnderHeader/>
         <Stations stations={stations} onClick={onStationSelect} state={state} />
         <Ribbon state={state} onClick={onStationSelect} />

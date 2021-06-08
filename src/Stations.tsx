@@ -6,6 +6,7 @@ import Styled from 'styled-components';
 const Container = Styled.div`
   margin: 0 auto;
   width: 95vw;
+  cursor: pointer
 `;
 
 const PlayerSpace = Styled.div`
