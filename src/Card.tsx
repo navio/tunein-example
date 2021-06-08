@@ -1,17 +1,20 @@
 import React from 'react';
-import { Station } from './Types';
+import { State, Station } from './Types';
 import styled from "styled-components";
 
 export interface MediaControlCardProps {
   station: Station;
+  state: State;
 }
 
 const MediaCard = styled.div`
-  border-bottom: 1px solid gray;
   display: flex;
   margin: 1rem 0;
   & > p {
     margin: 0;
+  }
+  & img {
+    height: 5rem;
   }
 `;
 
@@ -19,7 +22,6 @@ const MediaTitle = styled.div`
   display: flex;
   flex-flow: row;
   place-items: baseline;
-  margin: .5rem 0;
 
   & span {
     margin-left:.5rem;
@@ -27,6 +29,8 @@ const MediaTitle = styled.div`
 `;
 
 const MediaContent = styled.div`
+align-items: center;
+display: flex;
   padding: 0 1rem;
 `;
 
@@ -49,22 +53,23 @@ const TagsContainer = styled.ol`
   }
 `;
 
-const Tags = ({tags = []}: {tags: string[]}) => {
+const Tags = ({ tags = [] }: { tags: string[] }) => {
   return <TagsContainer>{tags.map(tag => <li>{tag}</li>)}</TagsContainer>
 }
 
-export default function MediaControlCard({ station }: MediaControlCardProps) {
-  return <MediaCard>
+export default function MediaControlCard({ station, state }: MediaControlCardProps) {
+  return <><MediaCard>
     <img alt="Logo" aria-hidden src={station.imgUrl} />
     <MediaContent>
-    <MediaTitle>
-    <Title>{station.name}</Title>
-     <span>Reliability: {station.reliability}</span>
-     <span>Popularity: {station.popularity}</span>
-     <Tags tags={station.tags} />
-    </MediaTitle>
-    <p>{station.description}</p>
+      <MediaTitle>
+        <Title>{station.name}</Title>
+        {/* <span>Reliability: {station.reliability}</span>
+        <span>Popularity: {station.popularity}</span> */}
+        <Tags tags={station.tags} />
+      </MediaTitle>
+      
     </MediaContent>
-   
   </MediaCard>
+  { state?.selected && station.id === state.selected.id && <p>{station.description}</p>}
+  </>
 }

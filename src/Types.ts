@@ -13,6 +13,16 @@ export interface State {
   media?: string ;
   status: string;
   selected?: Station;
+  stations: Station[];
+  sorted?: SortStations;
+  filter?: string;
+  tags: string[];
+}
+
+export enum SortStations{
+  popularity = "Popular",
+  unpopular = "Unpopular",
+  reliable = "Reliability"
 }
 
 export enum PlayEvent {
@@ -21,13 +31,20 @@ export enum PlayEvent {
 }
 
 export const initialState = {
-  status: PlayEvent.paused
+  status: PlayEvent.paused,
+  stations: [],
+  sorted: SortStations.reliable,
+  tags: []
+
 };
 
 export enum StationsEvents {
   play = 'Play',
   select = 'Select',
   stop = "Stop",
+  update = "UpdateStations",
+  sort = "SortStations",
+  byTag = "FilterStationsByTag"
 }
 
 

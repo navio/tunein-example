@@ -14,6 +14,10 @@ const PlayerSpace = Styled.div`
   background:black;
 `;
 
+const CardCointer = Styled.div`
+  border-bottom: 1px solid gray;
+`;
+
 interface StationsProps {
   stations: Station[];
   onClick: (selected: Station, media: string) => void
@@ -24,9 +28,9 @@ const Stations = ({stations = [], state, onClick}: StationsProps) => {
 
   return <Container>
   { stations.map(station => 
-    <div onClick={() =>onClick(station, station.streamUrl)}>
-      <Card station={station} />
-    </div>)
+    <CardCointer onClick={() =>onClick(station, station.streamUrl)}>
+      <Card station={station} state={state} />
+    </CardCointer>)
   }
   {state.status === PlayEvent.playing ? <PlayerSpace /> : <></>}
   </Container>

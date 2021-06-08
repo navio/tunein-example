@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { render } from 'react-dom';
 import Stations from './Stations';
-import {Station, initialState, State, StationsEvents, StationsActions} from './Types';
-import {getStations} from './API';
+import { Station, initialState, SortStations } from './Types';
+import { getStations } from './API';
 import Styled from 'styled-components';
 import './index.css'
 import Ribbon from './Ribbon';
-import reducer, { ERRORLOADING } from './Reducer';
+import reducer, { ERRORLOADING, FilterBy, PauseAction, PlayAction, RenderStations, SortBy, UpdateStations } from './Reducer';
 
 const Header = Styled.div`
   position: fixed;
@@ -18,40 +18,69 @@ const Header = Styled.div`
 `;
 
 const UnderHeader = Styled.div`
-  height: 80px;
+  height: 110px;
   background: white;
 `;
 
-// const audio = new Audio();
+const FiltersElement = Styled.div`
+  display:flex;
+  flex-flow: row-reverse;
+  margin: 1rem;
+`;
 
 export const App = () => {
-  
-  
 
-  const [stations, setStations] = useState<Station[]>([]);
+  const [state, Dispatch] = useReducer(reducer, undefined, () => initialState);
 
-  const [state, Dispatch] = useReducer(reducer,undefined,() => initialState);
-
-  const onStationSelect = (selected:Station, media:string) => {
-    Dispatch({type: StationsEvents.play, payload: {selected, media} })
+  const onStationSelect = (selected: Station, media: string) => {
+    Dispatch(PlayAction(selected, media));
   }
 
-  document.addEventListener(ERRORLOADING,() => {
-    Dispatch({type: StationsEvents.stop, payload: {} });
-  })
+  document.addEventListener(ERRORLOADING, () =>
+    Dispatch(PauseAction()))
 
   useEffect(() => {
-    getStations().then(data => {setStations(data)})
-  },[]);
+    getStations().then(data => {
+      Dispatch(UpdateStations(data));
+    })
+  }, []);
 
   return (
-      <div>
-        <Header><h1>TuneIn: Internet Radio</h1></Header>
-        <UnderHeader/>
-        <Stations stations={stations} onClick={onStationSelect} state={state} />
-        <Ribbon state={state} onClick={onStationSelect} />
-      </div>
-    );
+    <div>
+      <Header>
+        <h1>TuneIn: Internet Radio</h1>
+        <FiltersElement>
+        <div>Filter by:
+          <select onChange={(ev) => {
+            Dispatch(FilterBy(ev.target.value))
+            }} >
+              <option> All </option>
+              {state.tags
+                .map((key) => 
+                <option value={key} selected={key === state.filter}>
+                  {key}
+                </option>)}
+            </select>
+          </div>
+
+          <div>Sort by:
+          <select onChange={(ev) => {
+            Dispatch(SortBy(SortStations[ev.target.value]))
+            }} >
+              {Object.keys(SortStations)
+                .map((key) => 
+                <option value={key} selected={state.sorted === SortStations[key]}>
+                  {SortStations[key]}
+                </option>)}
+            </select>
+          </div>
+        </FiltersElement>
+      </Header>
+      <UnderHeader />
+      <Stations stations={RenderStations(state)} onClick={onStationSelect} state={state} />
+      <Ribbon state={state} onClick={onStationSelect} />
+    </div>
+  );
 }
 
 render(<App />, document.getElementById('root'));
