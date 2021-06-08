@@ -30,7 +30,7 @@ const reducer = (state:State, action: StationsActions): State => {
       case StationsEvents.stop: {
         audio.pause();
         const newStatus = 'paused';
-        return { ...state, status: newStatus};
+        return { ...state, status: newStatus, selected: undefined, media: undefined};
       }
       case StationsEvents.select:{
         const { selected } = action.payload; 
